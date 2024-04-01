@@ -17,6 +17,7 @@ public class FileInfo {
 
   public static final String AWS_FILE_REGEX = "(http|https)://(.*).s3.(.*?).?amazonaws.com/(.*)";
   public static final String GCP_FILE_REGEX = "(http|https)://storage.cloud.google.com/(.*?)/(.*)";
+  public static final String AZURE_FILE_REGEX = "(http|https)://(.*).(.*).core.windows.net/(.*)";
 
   private boolean isLocal;
   private String fileName;
@@ -53,7 +54,8 @@ public class FileInfo {
   /** Returns true if the file is not a cloud storage url. */
   private static boolean isLocalFile(String fileUrl) {
     if (!fileUrl.matches(AWS_FILE_REGEX)
-        && !fileUrl.matches(GCP_FILE_REGEX)) {
+        && !fileUrl.matches(GCP_FILE_REGEX)
+        && !fileUrl.matches(AZURE_FILE_REGEX)) {
       return true;
     }
     return false;
@@ -75,6 +77,12 @@ public class FileInfo {
       Matcher m = p.matcher(fileUrl);
       if (m.find()) {
         return m.group(3);
+      }
+    } else if (fileUrl.matches(AZURE_FILE_REGEX)) {
+      Pattern p = Pattern.compile(AZURE_FILE_REGEX);
+      Matcher m = p.matcher(fileUrl);
+      if (m.find()) {
+        return m.group(4);
       }
     }
     return null;

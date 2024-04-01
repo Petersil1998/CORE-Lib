@@ -86,8 +86,7 @@ public class StorageImpl implements Storage {
     BucketInfo bucketInfo = BucketInfo.parse(bucketUrl);
     StorageProviderFactory factory = new StorageProviderFactoryImpl(credentials);
     StorageProvider storageProvider = factory.getStorageProvider(bucketInfo.getProvider());
-    String region = storageProvider.getRegion(bucketInfo.getBucketUrl());
-    return region;
+    return storageProvider.getRegion(bucketInfo.getBucketUrl());
   }
 
   @Override

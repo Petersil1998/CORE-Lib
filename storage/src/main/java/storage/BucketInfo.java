@@ -16,6 +16,7 @@ public class BucketInfo {
 
   public static final String AWS_BUCKET_REGEX = "(http|https)://(.*).s3.(.*.)?amazonaws.com/?";
   public static final String GCP_BUCKET_REGEX = "(http|https)://storage.cloud.google.com/(.*?)/(.*)";
+  public static final String AZURE_BUCKET_REGEX = "(http|https)://(.*).(.*).core.windows.net/?";
 
   private Provider provider; // AWS | GCP
   private String region; // this is null for GCP, as the region is not included in the url
@@ -37,6 +38,8 @@ public class BucketInfo {
       return Provider.AWS;
     } else if (bucketUrl.matches(GCP_BUCKET_REGEX)) {
       return Provider.GCP;
+    } else if(bucketUrl.matches(AZURE_BUCKET_REGEX)) {
+      return Provider.AZURE;
     }
     return null;
   }
@@ -45,8 +48,7 @@ public class BucketInfo {
   private static String getBucketRegion(String bucketUrl) {
     if (bucketUrl.matches(AWS_BUCKET_REGEX)) {
       // region is encoded in the storage url
-      Pattern p = null;
-      p = Pattern.compile(AWS_BUCKET_REGEX);
+      Pattern p = Pattern.compile(AWS_BUCKET_REGEX);
       Matcher m = p.matcher(bucketUrl);
       if (m.find()) {
         String region = m.group(3);
@@ -61,7 +63,7 @@ public class BucketInfo {
 
   /** Get bucket name from bucket URL. */
   private static String getBucketName(String buketUrl) {
-    Pattern p = null;
+    Pattern p;
     if (buketUrl.matches(AWS_BUCKET_REGEX)) {
       p = Pattern.compile(AWS_BUCKET_REGEX);
       Matcher m = p.matcher(buketUrl);
