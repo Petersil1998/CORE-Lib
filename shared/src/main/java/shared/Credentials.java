@@ -1,5 +1,7 @@
 package shared;
 
+import com.azure.core.credential.AzureKeyCredential;
+import com.azure.core.credential.AzureSasCredential;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -27,12 +29,16 @@ public class Credentials {
   private GoogleCredentials gcpCredentials;
   private String googleProjectId;
   private GoogleCredentials gcpClientCredentials;
+  private AzureKeyCredential azureCredentials;
+  private AzureSasCredential azureSasCredential;
 
   private Credentials(String credentialsString) throws IOException {
     this.awsCredentials = getAwsCredentialsV2(credentialsString);
     this.gcpCredentials = getGoogleServiceCredentials(credentialsString);
     this.googleProjectId = getGoogleProjectId(credentialsString);
     this.gcpClientCredentials = getGoogleClientCredentials(credentialsString);
+    this.azureCredentials = getAzureKeyCredentials(credentialsString);
+    this.azureSasCredential = getAzureSasCredentials(credentialsString);
   }
 
   public static Credentials loadDefaultCredentials() throws IOException {
@@ -109,5 +115,15 @@ public class Credentials {
     TypeReference<Map<String, String>> typeRef = new TypeReference<>() {};
     Map<String, String> credentialsMap = mapper.readValue(in, typeRef);
     return credentialsMap.get("project_id");
+  }
+
+  private AzureKeyCredential getAzureKeyCredentials(String credentialsString) throws IOException {
+    Map<String, String> credentialsMap = getCredentialsMap(credentialsString, "azure_key_credentials");
+    return new AzureKeyCredential(credentialsMap.get("api_key"));
+  }
+
+  private AzureSasCredential getAzureSasCredentials(String credentialsString) throws IOException {
+    Map<String, String> credentialsMap = getCredentialsMap(credentialsString, "azure_key_credentials");
+    return new AzureSasCredential(credentialsMap.get("sas_token"));
   }
 }

@@ -43,6 +43,11 @@
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-storage</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-core</artifactId>
+            <version>1.45.0</version>
+        </dependency>
         <!-- TEST -->
         <dependency>
             <groupId>org.mockito</groupId>
