@@ -20,6 +20,11 @@ public class SpeechSynthesisFactoryImpl implements SpeechSynthesisFactory {
           AudioFormat.OGG_OPUS,
           AudioFormat.MULAW,
           AudioFormat.ALAW);
+  private List<AudioFormat> audioFormatsAzure =
+      List.of(
+          AudioFormat.MP3,
+          AudioFormat.PCM,
+          AudioFormat.WEBM);
 
   private Configuration configuration;
   private Credentials credentials;
@@ -45,6 +50,9 @@ public class SpeechSynthesisFactoryImpl implements SpeechSynthesisFactory {
     if (provider.equals(Provider.GCP)) {
       return new SpeechSynthesisGoogle(credentials, storage, configuration, runtime);
     }
+    if (provider.equals(Provider.AZURE)) {
+      return new SpeechSynthesisMicrosoft(credentials, storage, configuration, runtime);
+    }
     throw new RuntimeException("Provider must not be null!");
   }
 
@@ -58,6 +66,9 @@ public class SpeechSynthesisFactoryImpl implements SpeechSynthesisFactory {
     if (provider.equals(Provider.GCP)) {
       return new SpeechSynthesisGoogle(credentials, storage, configuration, runtime, region);
     }
+    if (provider.equals(Provider.AZURE)) {
+      return new SpeechSynthesisMicrosoft(credentials, storage, configuration, runtime, region);
+    }
     throw new RuntimeException("Provider must not be null!");
   }
 
@@ -65,7 +76,7 @@ public class SpeechSynthesisFactoryImpl implements SpeechSynthesisFactory {
   @Override
   public SpeechSynthesis getT2SProvider(AudioFormat audioFormat) throws Exception {
     // supported by both providers
-    if (audioFormatsAmazon.contains(audioFormat) && audioFormatsGoogle.contains(audioFormat)) {
+    if (audioFormatsAmazon.contains(audioFormat) && audioFormatsGoogle.contains(audioFormat) && audioFormatsAzure.contains(audioFormat)) {
       return getT2SProvider(configuration.getDefaultProvider());
     }
     // only supported by amazon
@@ -75,6 +86,10 @@ public class SpeechSynthesisFactoryImpl implements SpeechSynthesisFactory {
     // only supported by google
     if (audioFormatsGoogle.contains(audioFormat)) {
       return getT2SProvider(Provider.GCP);
+    }
+    // only supported by Azure
+    if(audioFormatsAzure.contains(audioFormat)) {
+      return getT2SProvider(Provider.AZURE);
     }
     throw new RuntimeException("Invalid audio format!");
   }

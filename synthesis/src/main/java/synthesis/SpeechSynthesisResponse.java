@@ -10,7 +10,7 @@ import shared.Provider;
 @Setter
 @ToString
 public class SpeechSynthesisResponse {
-  private Provider provider; // AWS | GCP
+  private Provider provider; // AWS | GCP | Azure
   private long synthesisTime; // in ms
   private byte[] audio; // binary stream containing the synthesized speech
 }

@@ -28,6 +28,12 @@
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>polly</artifactId>
         </dependency>
+        <!-- AZURE -->
+        <dependency>
+            <groupId>com.microsoft.cognitiveservices.speech</groupId>
+            <artifactId>client-sdk</artifactId>
+            <version>1.36.0</version>
+        </dependency>
         <!-- OTHERS -->
         <dependency>
             <groupId>core</groupId>
