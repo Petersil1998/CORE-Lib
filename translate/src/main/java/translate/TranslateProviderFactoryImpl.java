@@ -30,6 +30,9 @@ public class TranslateProviderFactoryImpl implements TranslateProviderFactory {
     if (provider.equals(Provider.GCP)){
       return new TranslateProviderGoogle(credentials, runtime, storage, configuration);
     }
+    if(provider.equals(Provider.AZURE)) {
+      return new TranslateProviderMicrosoft(credentials, runtime, storage, configuration);
+    }
     throw new RuntimeException("Failed to initialize translate provider.");
   }
 
@@ -41,6 +44,9 @@ public class TranslateProviderFactoryImpl implements TranslateProviderFactory {
     }
     if (provider.equals(Provider.GCP)) {
       return new TranslateProviderGoogle(credentials, runtime, storage, configuration, region);
+    }
+    if(provider.equals(Provider.AZURE)) {
+      return new TranslateProviderMicrosoft(credentials, runtime, storage, configuration, region);
     }
     throw new RuntimeException("Failed to initialize translate provider.");
   }

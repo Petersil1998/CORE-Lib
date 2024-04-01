@@ -28,6 +28,12 @@
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-translate</artifactId>
         </dependency>
+        <!-- AZURE -->
+        <dependency>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-ai-translation-text</artifactId>
+            <version>1.0.0-beta.1</version>
+        </dependency>
         <!-- OTHERS -->
         <dependency>
             <groupId>core</groupId>
