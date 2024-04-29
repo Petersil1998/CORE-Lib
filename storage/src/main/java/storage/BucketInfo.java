@@ -16,10 +16,10 @@ public class BucketInfo {
 
   public static final String AWS_BUCKET_REGEX = "(http|https)://(.*).s3.(.*.)?amazonaws.com/?";
   public static final String GCP_BUCKET_REGEX = "(http|https)://storage.cloud.google.com/(.*?)/(.*)";
-  public static final String AZURE_BUCKET_REGEX = "(http|https)://(.*).(.*).core.windows.net/?";
+  public static final String AZURE_BUCKET_REGEX = "(http|https)://(.*).blob.core.windows.net/([a-z0-9][a-z0-9\\-]*)/?";
 
   private Provider provider; // AWS | GCP
-  private String region; // this is null for GCP, as the region is not included in the url
+  private String region; // this is null for GCP, as the region is not included in the url, for Azure it's the name of the Resource
   private String bucketName; //  simply the bucket name
   private String bucketUrl; // includes trailing slash at the end
 
@@ -62,22 +62,27 @@ public class BucketInfo {
   }
 
   /** Get bucket name from bucket URL. */
-  private static String getBucketName(String buketUrl) {
+  private static String getBucketName(String bucketUrl) {
     Pattern p;
-    if (buketUrl.matches(AWS_BUCKET_REGEX)) {
+    if (bucketUrl.matches(AWS_BUCKET_REGEX)) {
       p = Pattern.compile(AWS_BUCKET_REGEX);
-      Matcher m = p.matcher(buketUrl);
+      Matcher m = p.matcher(bucketUrl);
       if (m.find()) {
         return m.group(2);
       }
-    } else if (buketUrl.matches(GCP_BUCKET_REGEX)) {
+    } else if (bucketUrl.matches(GCP_BUCKET_REGEX)) {
       p = Pattern.compile(GCP_BUCKET_REGEX);
-      Matcher m = p.matcher(buketUrl);
+      Matcher m = p.matcher(bucketUrl);
       if (m.find()) {
         return m.group(2);
+      }
+    } else if(bucketUrl.matches(AZURE_BUCKET_REGEX)) {
+      p = Pattern.compile(AZURE_BUCKET_REGEX);
+      Matcher m = p.matcher(bucketUrl);
+      if (m.find()) {
+        return m.group(3);
       }
     }
     return null;
   }
-
 }

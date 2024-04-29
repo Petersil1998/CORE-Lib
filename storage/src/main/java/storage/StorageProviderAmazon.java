@@ -12,11 +12,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class StorageProviderAmazon implements StorageProvider {
 
-  private Credentials credentials;
+  private final Credentials credentials;
 
   public StorageProviderAmazon(Credentials credentials) {
     this.credentials = credentials;
@@ -33,9 +34,7 @@ public class StorageProviderAmazon implements StorageProvider {
             .key(fileInfo.getFileName())
             .build();
     ResponseInputStream<GetObjectResponse> response = s3.getObject(getObjectRequest);
-    byte[] data = response.readAllBytes();
-    s3.close();
-    return data;
+    return response.readAllBytes();
   }
 
   @Override
@@ -49,14 +48,14 @@ public class StorageProviderAmazon implements StorageProvider {
             .key(fileInfo.getFileName())
             .build();
     s3.putObject(objectRequest, RequestBody.fromByteBuffer(ByteBuffer.wrap(data)));
-    s3.close();
   }
 
   @Override
   public boolean delete(String fileUrl) throws IOException {
     FileInfo fileInfo = FileInfo.parse(fileUrl);
     String region = getRegion(fileInfo.getBucketInfo().getBucketUrl());
-    try (S3Client s3 = getAmazonS3Client(credentials, region)) {
+    try {
+      S3Client s3 = getAmazonS3Client(credentials, region);
       DeleteObjectRequest deleteObjectRequest =
           DeleteObjectRequest.builder()
               .bucket(fileInfo.getBucketInfo().getBucketName())
@@ -75,7 +74,6 @@ public class StorageProviderAmazon implements StorageProvider {
     CreateBucketRequest createBucketRequest =
         CreateBucketRequest.builder().bucket(bucketName).build();
     s3.createBucket(createBucketRequest);
-    s3.close();
     return bucketName;
   }
 
@@ -88,7 +86,7 @@ public class StorageProviderAmazon implements StorageProvider {
     ListObjectsV2Iterable list = s3.listObjectsV2Paginator(request);
     for (ListObjectsV2Response response : list) {
       List<S3Object> objects = response.contents();
-      if (objects.size() > 0) {
+      if (!objects.isEmpty()) {
         List<ObjectIdentifier> objectIdentifiers =
             objects.stream()
                 .map(o -> ObjectIdentifier.builder().key(o.key()).build())
@@ -105,7 +103,6 @@ public class StorageProviderAmazon implements StorageProvider {
     DeleteBucketRequest deleteBucketRequest =
         DeleteBucketRequest.builder().bucket(bucketName).build();
     s3.deleteBucket(deleteBucketRequest);
-    s3.close();
     return bucketName;
   }
 
@@ -122,7 +119,7 @@ public class StorageProviderAmazon implements StorageProvider {
         s3.getBucketLocation(
             GetBucketLocationRequest.builder().bucket(bucketInfo.getBucketName()).build());
     String locationConstraint = response.locationConstraint().toString();
-    if (locationConstraint == "null") {
+    if (Objects.equals(locationConstraint, "null")) {
       return "us-east-1";
     }
     return locationConstraint;
@@ -137,8 +134,7 @@ public class StorageProviderAmazon implements StorageProvider {
         ListObjectsRequest.builder().bucket(bucketInfo.getBucketName()).build();
     ListObjectsResponse res = s3.listObjects(listObjects);
     List<S3Object> objects = res.contents();
-    List<String> fileKeys = objects.stream().map(o -> o.key()).collect(Collectors.toList());
-    return fileKeys;
+    return objects.stream().map(S3Object::key).collect(Collectors.toList());
   }
 
   /** Create amazon S3 client of SDK V2 */

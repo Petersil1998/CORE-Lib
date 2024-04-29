@@ -17,7 +17,7 @@ public class FileInfo {
 
   public static final String AWS_FILE_REGEX = "(http|https)://(.*).s3.(.*?).?amazonaws.com/(.*)";
   public static final String GCP_FILE_REGEX = "(http|https)://storage.cloud.google.com/(.*?)/(.*)";
-  public static final String AZURE_FILE_REGEX = "(http|https)://(.*).(.*).core.windows.net/(.*)";
+  public static final String AZURE_FILE_REGEX = "(http|https)://(.*).blob.core.windows.net/([a-z0-9][a-z0-9\\-]*)/(.*)";
 
   private boolean isLocal;
   private String fileName;
@@ -93,8 +93,6 @@ public class FileInfo {
       return null;
     }
     String fileName = getFileName(fileUrl);
-    String bucketUrl = fileUrl.substring(0, fileUrl.length() - fileName.length());
-    return bucketUrl;
+    return fileUrl.substring(0, fileUrl.length() - fileName.length());
   }
-
 }

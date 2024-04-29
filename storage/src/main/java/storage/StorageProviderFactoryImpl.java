@@ -5,7 +5,7 @@ import shared.Provider;
 
 public class StorageProviderFactoryImpl implements StorageProviderFactory {
 
-  private Credentials credentials;
+  private final Credentials credentials;
 
   public StorageProviderFactoryImpl(Credentials credentials) {
     this.credentials = credentials;
@@ -33,6 +33,8 @@ public class StorageProviderFactoryImpl implements StorageProviderFactory {
       return new StorageProviderAmazon(credentials);
     } else if (provider.equals(Provider.GCP)) {
       return new StorageProviderGoogle(credentials);
+    } else if(provider.equals(Provider.AZURE)) {
+      return new StorageProviderAzure(credentials);
     }
     return null;
   }

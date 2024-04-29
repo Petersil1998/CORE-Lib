@@ -30,7 +30,7 @@ public class Credentials {
   private String googleProjectId;
   private GoogleCredentials gcpClientCredentials;
   private AzureKeyCredential azureCredentials;
-  private AzureSasCredential azureSasCredential;
+  private String azureStorageAccountName;
 
   private Credentials(String credentialsString) throws IOException {
     this.awsCredentials = getAwsCredentialsV2(credentialsString);
@@ -38,7 +38,7 @@ public class Credentials {
     this.googleProjectId = getGoogleProjectId(credentialsString);
     this.gcpClientCredentials = getGoogleClientCredentials(credentialsString);
     this.azureCredentials = getAzureKeyCredentials(credentialsString);
-    this.azureSasCredential = getAzureSasCredentials(credentialsString);
+    this.azureStorageAccountName = getAzureStorageAccountName(credentialsString);
   }
 
   public static Credentials loadDefaultCredentials() throws IOException {
@@ -122,8 +122,8 @@ public class Credentials {
     return new AzureKeyCredential(credentialsMap.get("api_key"));
   }
 
-  private AzureSasCredential getAzureSasCredentials(String credentialsString) throws IOException {
+  public String getAzureStorageAccountName(String credentialsString) throws IOException {
     Map<String, String> credentialsMap = getCredentialsMap(credentialsString, "azure_key_credentials");
-    return new AzureSasCredential(credentialsMap.get("sas_token"));
+    return credentialsMap.get("storage_account_name");
   }
 }
