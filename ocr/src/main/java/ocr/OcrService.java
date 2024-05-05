@@ -7,8 +7,8 @@ import shared.Runtime;
 
 public class OcrService {
 
-  private Configuration configuration;
-  private Credentials credentials;
+  private final Configuration configuration;
+  private final Credentials credentials;
 
   public OcrService(Configuration configuration, Credentials credentials) {
     this.credentials = credentials;

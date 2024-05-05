@@ -16,11 +16,11 @@ import storage.Storage;
 
 public class OcrProviderAmazon implements OcrProvider {
 
-    private Credentials credentials;
-    private Storage storage;
-    private Runtime runtime;
-    private Configuration configuration;
-  private String serviceRegion;
+    private final Credentials credentials;
+    private final Storage storage;
+    private final Runtime runtime;
+    private final Configuration configuration;
+    private String serviceRegion;
 
     public OcrProviderAmazon(
             Credentials credentials, Runtime runtime, Storage storage, Configuration configuration) {
@@ -69,7 +69,8 @@ public class OcrProviderAmazon implements OcrProvider {
         StringBuilder resultBuilder = new StringBuilder();
         for (Block block : response.blocks()) {
             if (block.blockType() == BlockType.LINE) {
-                resultBuilder.append(block.text() + "\n");
+                resultBuilder.append(block.text())
+                        .append("\n");
             }
         }
         String text = resultBuilder.toString();

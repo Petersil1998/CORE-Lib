@@ -26,10 +26,10 @@ import storage.Storage;
 @ToString
 public class SpeechRecognitionAmazon implements SpeechRecognition {
 
-  private Credentials credentials;
-  private Storage storage;
-  private Runtime runtime;
-  private Configuration configuration;
+  private final Credentials credentials;
+  private final Storage storage;
+  private final Runtime runtime;
+  private final Configuration configuration;
   private BucketInfo tmpInputBucket;
   @Getter private String serviceRegion;
 
@@ -61,7 +61,8 @@ public class SpeechRecognitionAmazon implements SpeechRecognition {
       boolean vttSubtitles,
       boolean profanityFilter,
       boolean spokenEmoji,
-      boolean spokenPunctuation)
+      boolean spokenPunctuation,
+      boolean includeSNR)
       throws Exception {
     try {
       // parse input file url
@@ -133,7 +134,7 @@ public class SpeechRecognitionAmazon implements SpeechRecognition {
             .media(Media.builder().mediaFileUri(s3Uri).build())
             .languageCode(languageCode) // en-US
             .mediaSampleRateHertz(sampleRate);
-    if (subtitleFormats != null && subtitleFormats.size() > 0) {
+    if (subtitleFormats != null && !subtitleFormats.isEmpty()) {
       builder.subtitles(Subtitles.builder().formats(subtitleFormats).outputStartIndex(1).build());
     }
     return builder.build();

@@ -16,11 +16,10 @@ import storage.Storage;
 
 public class SpeechSynthesisAmazon implements SpeechSynthesis {
 
-  private Credentials credentials;
-  private Storage storage;
-  private Runtime runtime;
-  private Configuration configuration;
-  private BucketInfo tmpOutputBucket;
+  private final Credentials credentials;
+  private final Storage storage;
+  private final Runtime runtime;
+  private final Configuration configuration;
   private String serviceRegion;
 
   public SpeechSynthesisAmazon(

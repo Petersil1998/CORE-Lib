@@ -11,6 +11,7 @@ public interface SpeechRecognition {
       boolean vttSubtitles,
       boolean profanityFilter,
       boolean spokenEmoji,
-      boolean spokenPunctuation)
+      boolean spokenPunctuation,
+      boolean includeSNR)
       throws Exception;
 }

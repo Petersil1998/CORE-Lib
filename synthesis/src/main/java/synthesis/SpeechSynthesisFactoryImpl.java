@@ -11,25 +11,25 @@ import storage.StorageImpl;
 
 public class SpeechSynthesisFactoryImpl implements SpeechSynthesisFactory {
 
-  private List<AudioFormat> audioFormatsAmazon =
+  private final List<AudioFormat> audioFormatsAmazon =
       List.of(AudioFormat.MP3, AudioFormat.PCM, AudioFormat.OGG_VORBIS);
-  private List<AudioFormat> audioFormatsGoogle =
+  private final List<AudioFormat> audioFormatsGoogle =
       List.of(
           AudioFormat.MP3,
           AudioFormat.PCM,
           AudioFormat.OGG_OPUS,
           AudioFormat.MULAW,
           AudioFormat.ALAW);
-  private List<AudioFormat> audioFormatsAzure =
+  private final List<AudioFormat> audioFormatsAzure =
       List.of(
           AudioFormat.MP3,
           AudioFormat.PCM,
           AudioFormat.WEBM);
 
-  private Configuration configuration;
-  private Credentials credentials;
-  private Runtime runtime;
-  private Storage storage;
+  private final Configuration configuration;
+  private final Credentials credentials;
+  private final Runtime runtime;
+  private final Storage storage;
 
   public SpeechSynthesisFactoryImpl(
       Configuration configuration, Credentials credentials, Runtime runtime, Storage storage) {

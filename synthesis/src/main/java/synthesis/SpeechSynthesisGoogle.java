@@ -13,10 +13,10 @@ import storage.Storage;
 public class SpeechSynthesisGoogle implements SpeechSynthesis {
 
   private static final String ENDPOINT = "%s-texttospeech.googleapis.com:443";
-  private Credentials credentials;
-  private Storage storage;
-  private Runtime runtime;
-  private Configuration configuration;
+  private final Credentials credentials;
+  private final Storage storage;
+  private final Runtime runtime;
+  private final Configuration configuration;
   private String serviceRegion;
 
   public SpeechSynthesisGoogle(

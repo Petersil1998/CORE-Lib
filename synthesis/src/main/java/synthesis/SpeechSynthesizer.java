@@ -9,8 +9,8 @@ import storage.StorageImpl;
 
 public class SpeechSynthesizer {
 
-  private Configuration configuration;
-  private Credentials credentials;
+  private final Configuration configuration;
+  private final Credentials credentials;
 
   public SpeechSynthesizer(Configuration configuration, Credentials credentials) {
     this.credentials = credentials;
@@ -26,7 +26,7 @@ public class SpeechSynthesizer {
         speechSynthesisRequest.getLanguage(),
         speechSynthesisRequest.getTextType(),
         speechSynthesisRequest.getGender(),
-        AudioFormat.PCM);
+        AudioFormat.MP3);
   }
 
   /** Provider is explicitly selected. */

@@ -24,10 +24,10 @@ import storage.Storage;
 public class SpeechRecognitionGoogle implements SpeechRecognition {
 
   private static final String ENDPOINT = "%s-speech.googleapis.com:443";
-  private Credentials credentials;
-  private Storage storage;
-  private Runtime runtime;
-  private Configuration configuration;
+  private final Credentials credentials;
+  private final Storage storage;
+  private final Runtime runtime;
+  private final Configuration configuration;
   private String serviceRegion;
 
   public SpeechRecognitionGoogle(
@@ -58,7 +58,8 @@ public class SpeechRecognitionGoogle implements SpeechRecognition {
       boolean vttSubtitles,
       boolean profanityFilter,
       boolean spokenEmoji,
-      boolean spokenPunctuation)
+      boolean spokenPunctuation,
+      boolean includeSNR)
       throws Exception {
     // parse input file url
     FileInfo inputFileInfo = FileInfo.parse(inputFile);

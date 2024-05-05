@@ -3,29 +3,23 @@ package synthesis;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.cognitiveservices.speech.*;
 import com.microsoft.cognitiveservices.speech.SpeechSynthesizer;
-import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
 import shared.Configuration;
 import shared.Credentials;
 import shared.Provider;
 import shared.Runtime;
-import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.polly.PollyClient;
 import software.amazon.awssdk.utils.CollectionUtils;
-import storage.BucketInfo;
 import storage.Storage;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.Arrays;
 import java.util.Locale;
-import java.util.Objects;
 
 public class SpeechSynthesisMicrosoft implements SpeechSynthesis {
 
-    private Credentials credentials;
-    private Storage storage;
-    private Runtime runtime;
-    private Configuration configuration;
+    private final Credentials credentials;
+    private final Storage storage;
+    private final Runtime runtime;
+    private final Configuration configuration;
     private String serviceRegion;
 
     public SpeechSynthesisMicrosoft(
@@ -86,16 +80,10 @@ public class SpeechSynthesisMicrosoft implements SpeechSynthesis {
                             .audio(result.getAudioData())
                             .synthesisTime(endSynthesis - startSynthesis)
                             .build();
-                }
-                else if (result.getReason() == ResultReason.Canceled) {
+                } else if (result.getReason() == ResultReason.Canceled) {
                     SpeechSynthesisCancellationDetails cancellation = SpeechSynthesisCancellationDetails.fromResult(result);
-                    System.out.println("CANCELED: Reason=" + cancellation.getReason());
-
-                    if (cancellation.getReason() == CancellationReason.Error) {
-                        System.out.println("CANCELED: ErrorCode=" + cancellation.getErrorCode());
-                        System.out.println("CANCELED: ErrorDetails=" + cancellation.getErrorDetails());
-                        System.out.println("CANCELED: Did you set the speech resource key and region values?");
-                    }
+                    throw new RuntimeException(String.format("Speech Recognition Request was canceled. Reason: %s. Error Code: %d. Details: %s",
+                            cancellation.getReason().getValue(), cancellation.getErrorCode().getValue(), cancellation.getErrorDetails()));
                 }
                 return null;
             }

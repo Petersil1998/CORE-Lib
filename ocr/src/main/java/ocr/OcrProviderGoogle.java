@@ -16,10 +16,10 @@ public class OcrProviderGoogle implements OcrProvider {
 
   private static final String ENDPOINT = "%s-vision.googleapis.com:443";
 
-  private Credentials credentials;
-  private Storage storage;
-  private Runtime runtime;
-  private Configuration configuration;
+  private final Credentials credentials;
+  private final Storage storage;
+  private final Runtime runtime;
+  private final Configuration configuration;
   private String serviceRegion;
 
   public OcrProviderGoogle(
@@ -69,13 +69,14 @@ public class OcrProviderGoogle implements OcrProvider {
         BatchAnnotateFilesRequest.newBuilder().addRequests(fileRequest).build();
     BatchAnnotateFilesResponse response = imageAnnotatorClient.batchAnnotateFiles(request);
     // parse response
-    String fullText = "";
+    StringBuilder fullText = new StringBuilder();
     for (AnnotateFileResponse fileResponse : response.getResponsesList()) {
       for (AnnotateImageResponse imageResponse : fileResponse.getResponsesList()) {
-        fullText += "\n" + imageResponse.getFullTextAnnotation().getText();
+        fullText.append("\n")
+                .append(imageResponse.getFullTextAnnotation().getText());
       }
     }
-    return OcrResponse.builder().text(fullText).build();
+    return OcrResponse.builder().text(fullText.toString()).build();
   }
 
   /** Create google cloud vision client */

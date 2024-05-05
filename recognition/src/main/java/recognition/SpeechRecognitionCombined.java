@@ -7,9 +7,9 @@ import shared.Runtime;
 
 public class SpeechRecognitionCombined implements SpeechRecognition {
 
-  private Credentials credentials;
-  private Runtime runtime;
-  private Configuration configuration;
+  private final Credentials credentials;
+  private final Runtime runtime;
+  private final Configuration configuration;
 
   public SpeechRecognitionCombined(
       Credentials credentials, Runtime runtime, Configuration configuration) {
@@ -28,12 +28,14 @@ public class SpeechRecognitionCombined implements SpeechRecognition {
       boolean vttSubtitles,
       boolean profanityFilter,
       boolean spokenEmoji,
-      boolean spokenPunctuation)
+      boolean spokenPunctuation,
+      boolean includeSNR)
       throws Exception {
     SpeechRecognitionFactoryImpl factory =
         new SpeechRecognitionFactoryImpl(configuration, credentials, runtime);
     SpeechRecognition amazonSpeechRecognition = factory.getS2TProvider(Provider.AWS);
     SpeechRecognition googleSpeechRecognition = factory.getS2TProvider(Provider.GCP);
+    SpeechRecognition microsoftSpeechRecognition = factory.getS2TProvider(Provider.AZURE);
     SpeechRecognitionResponse amazonResult =
         amazonSpeechRecognition.recognizeSpeech(
             inputFile,
@@ -44,7 +46,8 @@ public class SpeechRecognitionCombined implements SpeechRecognition {
             vttSubtitles,
             profanityFilter,
             spokenEmoji,
-            spokenPunctuation);
+            spokenPunctuation,
+            includeSNR);
     SpeechRecognitionResponse googleResult =
         googleSpeechRecognition.recognizeSpeech(
             inputFile,
@@ -55,9 +58,24 @@ public class SpeechRecognitionCombined implements SpeechRecognition {
             vttSubtitles,
             profanityFilter,
             spokenEmoji,
-            spokenPunctuation);
+            spokenPunctuation,
+            includeSNR);
+    SpeechRecognitionResponse microsoftResult =
+        microsoftSpeechRecognition.recognizeSpeech(
+            inputFile,
+            sampleRate,
+            languageCode,
+            channelCount,
+            srtSubtitles,
+            vttSubtitles,
+            profanityFilter,
+            spokenEmoji,
+            spokenPunctuation,
+            includeSNR);
+
     googleResult.setSrtSubtitles(amazonResult.getSrtSubtitles());
     googleResult.setVttSubtitles(amazonResult.getVttSubtitles());
+    googleResult.setSignalToNoiseRatio(microsoftResult.getSignalToNoiseRatio());
     return googleResult;
   }
 }

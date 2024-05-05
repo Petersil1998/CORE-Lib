@@ -1,5 +1,6 @@
 package storage;
 
+import shared.Configuration;
 import shared.Credentials;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -18,9 +19,11 @@ import java.util.stream.Collectors;
 public class StorageProviderAmazon implements StorageProvider {
 
   private final Credentials credentials;
+  private final Configuration configuration;
 
-  public StorageProviderAmazon(Credentials credentials) {
+  public StorageProviderAmazon(Credentials credentials, Configuration configuration) {
     this.credentials = credentials;
+    this.configuration = configuration;
   }
 
   @Override

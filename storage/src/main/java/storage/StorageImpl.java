@@ -1,5 +1,6 @@
 package storage;
 
+import shared.Configuration;
 import shared.Credentials;
 import shared.Provider;
 
@@ -11,10 +12,16 @@ import java.util.List;
 
 public class StorageImpl implements Storage {
 
-  private Credentials credentials;
+  private final Credentials credentials;
+  private final Configuration configuration;
 
   public StorageImpl(Credentials credentials) {
+    this(credentials, Configuration.builder().build());
+  }
+
+  public StorageImpl(Credentials credentials, Configuration configuration) {
     this.credentials = credentials;
+    this.configuration = configuration;
   }
 
   @Override
@@ -22,11 +29,12 @@ public class StorageImpl implements Storage {
     FileInfo fileInfo = FileInfo.parse(fileUrl);
     if (fileInfo.isLocal()) {
       // file is stored on the local filesystem
-      FileInputStream in = new FileInputStream(fileUrl);
-      return in.readAllBytes();
+      try(FileInputStream in = new FileInputStream(fileUrl)) {
+        return in.readAllBytes();
+      }
     }
     // file is stored in cloud storage
-    StorageProviderFactory factory = new StorageProviderFactoryImpl(credentials);
+    StorageProviderFactory factory = new StorageProviderFactoryImpl(credentials, configuration);
     StorageProvider provider = factory.getStorageProvider(fileInfo);
     return provider.read(fileUrl);
   }
@@ -36,12 +44,13 @@ public class StorageImpl implements Storage {
     FileInfo fileInfo = FileInfo.parse(fileUrl);
     if (fileInfo.isLocal()) {
       // file is stored on the local filesystem
-      FileOutputStream out = new FileOutputStream(fileUrl);
-      out.write(data);
+      try(FileOutputStream out = new FileOutputStream(fileUrl)) {
+        out.write(data);
+      }
       return;
     }
     // file is stored in cloud storage
-    StorageProviderFactory factory = new StorageProviderFactoryImpl(credentials);
+    StorageProviderFactory factory = new StorageProviderFactoryImpl(credentials, configuration);
     StorageProvider provider = factory.getStorageProvider(fileInfo);
     provider.write(data, fileUrl);
   }
@@ -55,14 +64,14 @@ public class StorageImpl implements Storage {
       return file.delete();
     }
     // file is stored in cloud storage
-    StorageProviderFactory factory = new StorageProviderFactoryImpl(credentials);
+    StorageProviderFactory factory = new StorageProviderFactoryImpl(credentials, configuration);
     StorageProvider provider = factory.getStorageProvider(fileInfo);
     return provider.delete(fileUrl);
   }
 
   @Override
   public String createBucket(Provider provider, String bucketName, String region) throws Exception {
-    StorageProviderFactory factory = new StorageProviderFactoryImpl(credentials);
+    StorageProviderFactory factory = new StorageProviderFactoryImpl(credentials, configuration);
     StorageProvider storageProvider = factory.getStorageProvider(provider);
     storageProvider.createBucket(bucketName, region);
     return bucketName;
@@ -72,7 +81,7 @@ public class StorageImpl implements Storage {
   public String deleteBucket(Provider provider, String bucketName, String region)
       throws IOException {
     try {
-      StorageProviderFactory factory = new StorageProviderFactoryImpl(credentials);
+      StorageProviderFactory factory = new StorageProviderFactoryImpl(credentials, configuration);
       StorageProvider storageProvider = factory.getStorageProvider(provider);
       storageProvider.deleteBucket(bucketName, region);
       return bucketName;
@@ -84,7 +93,7 @@ public class StorageImpl implements Storage {
   @Override
   public String getRegion(String bucketUrl) throws IOException {
     BucketInfo bucketInfo = BucketInfo.parse(bucketUrl);
-    StorageProviderFactory factory = new StorageProviderFactoryImpl(credentials);
+    StorageProviderFactory factory = new StorageProviderFactoryImpl(credentials, configuration);
     StorageProvider storageProvider = factory.getStorageProvider(bucketInfo.getProvider());
     return storageProvider.getRegion(bucketInfo.getBucketUrl());
   }
@@ -92,7 +101,7 @@ public class StorageImpl implements Storage {
   @Override
   public List<String> listFiles(String bucketUrl) throws IOException {
     BucketInfo bucketInfo = BucketInfo.parse(bucketUrl);
-    StorageProviderFactory factory = new StorageProviderFactoryImpl(credentials);
+    StorageProviderFactory factory = new StorageProviderFactoryImpl(credentials, configuration);
     StorageProvider storageProvider = factory.getStorageProvider(bucketInfo.getProvider());
     return storageProvider.listFiles(bucketUrl);
   }

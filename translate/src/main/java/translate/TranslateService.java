@@ -7,8 +7,8 @@ import shared.Runtime;
 
 public class TranslateService {
 
-    private Configuration configuration;
-    private Credentials credentials;
+    private final Configuration configuration;
+    private final Credentials credentials;
 
     public TranslateService(Configuration configuration, Credentials credentials){
         this.credentials = credentials;
@@ -22,11 +22,10 @@ public class TranslateService {
         TranslateProviderFactoryImpl factory = new TranslateProviderFactoryImpl(configuration, credentials, runtime);
     TranslateProvider translateProvider = factory.getProvider(provider, region);
         // invoke the service
-        TranslateResponse response = translateProvider.translate(
+        return translateProvider.translate(
                 translateRequest.getInputFile(),
                 translateRequest.getLanguage()
         );
-        return response;
     }
 
 }

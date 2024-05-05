@@ -13,10 +13,12 @@ import java.util.List;
 
 public class StorageProviderGoogle implements StorageProvider {
 
-  private Credentials credentials;
+  private final Credentials credentials;
+  private final Configuration configuration;
 
-  public StorageProviderGoogle(Credentials credentials) {
+  public StorageProviderGoogle(Credentials credentials, Configuration configuration) {
     this.credentials = credentials;
+    this.configuration = configuration;
   }
 
   @Override

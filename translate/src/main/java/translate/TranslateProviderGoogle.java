@@ -12,10 +12,10 @@ import storage.Storage;
 public class TranslateProviderGoogle implements TranslateProvider {
 
   private static final String ENDPOINT = "translate-%s.googleapis.com:443";
-  private Credentials credentials;
-  private Storage storage;
-  private Runtime runtime;
-  private Configuration configuration;
+  private final Credentials credentials;
+  private final Storage storage;
+  private final Runtime runtime;
+  private final Configuration configuration;
   private String serviceRegion;
 
   public TranslateProviderGoogle(

@@ -31,10 +31,10 @@ public class Test {
 
         SpeechSynthesisResponse response = speechSynthesizer.synthesizeSpeech(request, Provider.AZURE, "germanywestcentral");
 
-        byte[] wav = pcmToWav(response.getAudio(), 48000, 16, 1);
+        // byte[] wav = pcmToWav(response.getAudio(), 48000, 16, 1);
 
         Storage storage = new StorageImpl(credentials);
-        storage.write(wav, "synthesis\\output.wav");
+        storage.write(response.getAudio(), "synthesis\\output.mp3");
     }
 
     private static byte[] pcmToWav(byte[] data, int sampleRate, int sampleSizeInBits, int channelCount)

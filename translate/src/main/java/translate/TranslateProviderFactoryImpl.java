@@ -10,9 +10,9 @@ import storage.StorageImpl;
 
 public class TranslateProviderFactoryImpl implements TranslateProviderFactory {
 
-  private Configuration configuration;
-  private Credentials credentials;
-  private Runtime runtime;
+  private final Configuration configuration;
+  private final Credentials credentials;
+  private final Runtime runtime;
 
   public TranslateProviderFactoryImpl(
           Configuration configuration, Credentials credentials, Runtime runtime) {

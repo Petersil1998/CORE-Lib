@@ -1,10 +1,7 @@
 package storage;
 
-import com.azure.core.credential.TokenCredential;
-import com.azure.core.management.AzureEnvironment;
 import com.azure.core.management.profile.AzureProfile;
 import com.azure.core.util.BinaryData;
-import com.azure.identity.ClientSecretCredentialBuilder;
 import com.azure.resourcemanager.AzureResourceManager;
 import com.azure.resourcemanager.storage.fluent.models.StorageAccountInner;
 import com.azure.storage.blob.BlobContainerClient;
@@ -12,17 +9,24 @@ import com.azure.storage.blob.BlobContainerClientBuilder;
 import com.azure.storage.blob.models.BlobItem;
 import com.azure.storage.blob.specialized.BlockBlobClient;
 import com.azure.storage.common.StorageSharedKeyCredential;
+import shared.Configuration;
 import shared.Credentials;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class StorageProviderAzure implements StorageProvider {
+public class StorageProviderMicrosoft implements StorageProvider {
 
     private final Credentials credentials;
+    private final Configuration configuration;
 
-    public StorageProviderAzure(Credentials credentials) {
+    public StorageProviderMicrosoft(Credentials credentials) {
+        this(credentials, Configuration.builder().build());
+    }
+
+    public StorageProviderMicrosoft(Credentials credentials, Configuration configuration) {
         this.credentials = credentials;
+        this.configuration = configuration;
     }
 
     @Override
@@ -74,14 +78,10 @@ public class StorageProviderAzure implements StorageProvider {
 
     @Override
     public String getRegion(String bucketUrl) {
-        AzureProfile profile = new AzureProfile(AzureEnvironment.AZURE);
-        TokenCredential credential = new ClientSecretCredentialBuilder()
-                .tenantId("")
-                .clientId("")
-                .clientSecret("")
-                .build();
-
-        AzureResourceManager manager = AzureResourceManager.authenticate(credential, profile).withSubscription("");
+        AzureResourceManager manager = AzureResourceManager.authenticate(
+                credentials.getAzureClientSecretCredentials(),
+                new AzureProfile(configuration.getDefaultAzureEnvironment())
+        ).withSubscription(credentials.getAzureSubscriptionKey());
         StorageAccountInner storageAccount = manager.storageAccounts().manager().serviceClient().getStorageAccounts().list().stream()
                 .filter(storage -> credentials.getAzureStorageAccountName().equals(storage.name()))
                 .findAny()

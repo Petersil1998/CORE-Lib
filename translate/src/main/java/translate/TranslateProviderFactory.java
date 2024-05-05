@@ -7,5 +7,5 @@ public interface TranslateProviderFactory {
 
     TranslateProvider getProvider(Provider provider) throws IOException;
 
-  TranslateProvider getProvider(Provider provider, String region) throws IOException;
+    TranslateProvider getProvider(Provider provider, String region) throws IOException;
 }

@@ -5,8 +5,8 @@ import shared.Runtime;
 
 public class SpeechRecognizer {
 
-  private Configuration configuration;
-  private Credentials credentials;
+  private final Configuration configuration;
+  private final Credentials credentials;
 
   public SpeechRecognizer(Configuration configuration, Credentials credentials) {
     this.credentials = credentials;
@@ -22,6 +22,7 @@ public class SpeechRecognizer {
         speechRecognitionRequest.getSampleRate(),
         speechRecognitionRequest.getLanguageCode(),
         speechRecognitionRequest.getChannelCount(),
+        false,
         false,
         false,
         false,
@@ -70,8 +71,7 @@ public class SpeechRecognizer {
         new SpeechRecognitionFactoryImpl(configuration, credentials, runtime);
     SpeechRecognition speechRecognizer = factory.getS2TProvider(speechRecognitionFeatures);
     // invoke the service
-    SpeechRecognitionResponse response =
-        speechRecognizer.recognizeSpeech(
+    return speechRecognizer.recognizeSpeech(
             speechRecognitionRequest.getInputFile(),
             speechRecognitionRequest.getSampleRate(),
             speechRecognitionRequest.getLanguageCode(),
@@ -80,8 +80,8 @@ public class SpeechRecognizer {
             speechRecognitionFeatures.isVttSubtitles(),
             speechRecognitionFeatures.isProfanityFilter(),
             speechRecognitionFeatures.isSpokenEmoji(),
-            speechRecognitionFeatures.isSpokenPunctuation());
-    return response;
+            speechRecognitionFeatures.isSpokenPunctuation(),
+            speechRecognitionFeatures.isIncludeSNR());
   }
 
   /** Provider is selected based on the location of the input. */

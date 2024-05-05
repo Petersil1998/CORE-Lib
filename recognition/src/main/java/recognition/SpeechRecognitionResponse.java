@@ -18,4 +18,5 @@ public class SpeechRecognitionResponse {
   private List<Word> words; // information about each detected word
   private String srtSubtitles; // subtitles in SRT format
   private String vttSubtitles; // subtitles in VTT format
+  private Float signalToNoiseRatio; // Azure
 }

@@ -14,10 +14,10 @@ import storage.Storage;
 
 public class TranslateProviderAmazon implements TranslateProvider {
 
-  private Credentials credentials;
-  private Storage storage;
-  private Runtime runtime;
-  private Configuration configuration;
+  private final Credentials credentials;
+  private final Storage storage;
+  private final Runtime runtime;
+  private final Configuration configuration;
 
   private String serviceRegion;
 

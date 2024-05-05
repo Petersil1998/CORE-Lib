@@ -19,6 +19,8 @@ public class Runtime {
         return Provider.GCP;
       } else if (System.getenv("AWS_REGION") != null) {
         return Provider.AWS;
+      } else if(System.getenv("REGION_NAME") != null) {
+        return Provider.AZURE;
       }
     } catch (Exception e) {
       return null;
@@ -40,6 +42,9 @@ public class Runtime {
       }
       if (functionProvider.equals(Provider.GCP)) {
         return getRegionGoogle();
+      }
+      if(functionProvider.equals(Provider.AZURE)) {
+        return getRegionAzure();
       }
     } catch (Exception e) {
       return null;
@@ -68,5 +73,9 @@ public class Runtime {
 
   private String getRegionAmazon() throws IOException {
     return System.getenv().get("AWS_REGION");
+  }
+
+  private String getRegionAzure() {
+    return System.getenv("REGION_NAME");
   }
 }

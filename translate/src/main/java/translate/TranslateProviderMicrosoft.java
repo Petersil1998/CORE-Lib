@@ -4,8 +4,6 @@ import com.azure.ai.translation.text.TextTranslationClient;
 import com.azure.ai.translation.text.TextTranslationClientBuilder;
 import com.azure.ai.translation.text.models.InputTextItem;
 import com.azure.ai.translation.text.models.TranslatedTextItem;
-import com.google.cloud.translate.v3.TranslateTextResponse;
-import com.google.cloud.translate.v3.TranslationServiceClient;
 import shared.Configuration;
 import shared.Credentials;
 import shared.Provider;
@@ -16,11 +14,13 @@ import java.io.IOException;
 import java.util.List;
 
 public class TranslateProviderMicrosoft implements TranslateProvider {
+
     private static final String ENDPOINT = "https://api.cognitive.microsofttranslator.com";
-    private Credentials credentials;
-    private Storage storage;
-    private Runtime runtime;
-    private Configuration configuration;
+
+    private final Credentials credentials;
+    private final Storage storage;
+    private final Runtime runtime;
+    private final Configuration configuration;
     private String serviceRegion;
 
     public TranslateProviderMicrosoft(

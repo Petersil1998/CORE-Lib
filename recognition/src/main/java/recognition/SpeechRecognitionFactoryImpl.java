@@ -9,9 +9,9 @@ import storage.StorageImpl;
 
 public class SpeechRecognitionFactoryImpl implements SpeechRecognitionFactory {
 
-  private Configuration configuration;
-  private Credentials credentials;
-  private Runtime runtime;
+  private final Configuration configuration;
+  private final Credentials credentials;
+  private final Runtime runtime;
 
   public SpeechRecognitionFactoryImpl(
       Configuration configuration, Credentials credentials, Runtime runtime) {
@@ -44,19 +44,29 @@ public class SpeechRecognitionFactoryImpl implements SpeechRecognitionFactory {
       throws IOException {
     // run on amazon
     if (hasAmazonFeatures(speechRecognitionFeatures)
-        && !hasGoogleFeatures(speechRecognitionFeatures)) {
+        && !hasGoogleFeatures(speechRecognitionFeatures)
+        && !hasMicrosoftFeatures(speechRecognitionFeatures)) {
       return getS2TProvider(Provider.AWS);
     }
     // run on google
     if (!hasAmazonFeatures(speechRecognitionFeatures)
-        && hasGoogleFeatures(speechRecognitionFeatures)) {
+        && hasGoogleFeatures(speechRecognitionFeatures)
+        && !hasMicrosoftFeatures(speechRecognitionFeatures)) {
       return getS2TProvider(Provider.GCP);
     }
-    // run on both providers
+
+    // run on Microsoft
+    if (!hasAmazonFeatures(speechRecognitionFeatures)
+        && !hasGoogleFeatures(speechRecognitionFeatures)
+        && hasMicrosoftFeatures(speechRecognitionFeatures)) {
+      return getS2TProvider(Provider.AZURE);
+    }
+
+    // run on all providers
     if (hasAmazonFeatures(speechRecognitionFeatures)
-        && hasGoogleFeatures(speechRecognitionFeatures)) {
-      Runtime runtime = new Runtime();
-      return new SpeechRecognitionCombined(credentials, runtime, configuration);
+        && hasGoogleFeatures(speechRecognitionFeatures)
+        && hasMicrosoftFeatures(speechRecognitionFeatures)) {
+      return new SpeechRecognitionCombined(credentials, new Runtime(), configuration);
     }
     return getS2TProvider(configuration.getDefaultProvider());
   }
@@ -71,6 +81,9 @@ public class SpeechRecognitionFactoryImpl implements SpeechRecognitionFactory {
     if (provider.equals(Provider.GCP)) {
       return new SpeechRecognitionGoogle(credentials, runtime, storage, configuration);
     }
+    if (provider.equals(Provider.AZURE)) {
+      return new SpeechRecognitionMicrosoft(credentials, runtime, storage, configuration);
+    }
     throw new RuntimeException("Failed to initialize S2T provider.");
   }
 
@@ -84,16 +97,25 @@ public class SpeechRecognitionFactoryImpl implements SpeechRecognitionFactory {
     if (provider.equals(Provider.GCP)) {
       return new SpeechRecognitionGoogle(credentials, runtime, storage, configuration, region);
     }
+    if (provider.equals(Provider.AZURE)) {
+      return new SpeechRecognitionMicrosoft(credentials, runtime, storage, configuration, region);
+    }
     throw new RuntimeException("Failed to initialize S2T provider.");
   }
 
   private boolean hasAmazonFeatures(SpeechRecognitionFeatures speechRecognitionFeatures) {
-    return speechRecognitionFeatures.isSrtSubtitles() || speechRecognitionFeatures.isSrtSubtitles();
+    return speechRecognitionFeatures.isSrtSubtitles() || speechRecognitionFeatures.isVttSubtitles();
   }
 
   private boolean hasGoogleFeatures(SpeechRecognitionFeatures speechRecognitionFeatures) {
     return speechRecognitionFeatures.isSpokenPunctuation()
         || speechRecognitionFeatures.isProfanityFilter()
         || speechRecognitionFeatures.isSpokenEmoji();
+  }
+
+  private boolean hasMicrosoftFeatures(SpeechRecognitionFeatures speechRecognitionFeatures) {
+    return speechRecognitionFeatures.isSpokenPunctuation()
+            || speechRecognitionFeatures.isProfanityFilter()
+            || speechRecognitionFeatures.isIncludeSNR();
   }
 }

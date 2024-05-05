@@ -33,7 +33,7 @@ public interface Storage {
    *
    * @param fileUrl The url of the file to read. Can point to the local filesystem, AWS S3, Google
    *     Cloud Storage or Azure Blob Storage.
-   * @throws Exception If the url can not be parsed.
+   * @throws IOException If the url can not be parsed.
    * @return True if the file was deleted and false if the file did not exist.
    */
   boolean delete(String fileUrl) throws IOException;
