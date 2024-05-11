@@ -70,7 +70,7 @@ public class SpeechRecognitionMicrosoft implements SpeechRecognition {
         }
 
         try(AudioConfig audioConfig = AudioConfig.fromWavFileInput(convertedFileName);
-            SpeechConfig speechConfig = SpeechConfig.fromSubscription(credentials.getAzureCredentials().getKey(), configuration.getDefaultRegionAzure())) {
+            SpeechConfig speechConfig = SpeechConfig.fromSubscription(credentials.getAzureCredentials().getSpeechRecognitionApiKey(), configuration.getDefaultRegionAzure())) {
             speechConfig.setSpeechRecognitionLanguage(languageCode);
             if(spokenPunctuation) {
                 speechConfig.enableDictation();

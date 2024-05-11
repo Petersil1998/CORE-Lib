@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>recognition</artifactId>
+    <artifactId>sentiment</artifactId>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,32 +21,18 @@
         <!-- GCP -->
         <dependency>
             <groupId>com.google.cloud</groupId>
-            <artifactId>google-cloud-speech</artifactId>
+            <artifactId>google-cloud-language</artifactId>
         </dependency>
         <!-- AWS -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
-            <artifactId>transcribe</artifactId>
-            <!-- Exclude Netty because of Version mismatches with Azure -->
-            <exclusions>
-                <exclusion>
-                    <groupId>io.netty</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
+            <artifactId>comprehend</artifactId>
         </dependency>
         <!-- OTHERS -->
         <dependency>
-            <groupId>com.microsoft.cognitiveservices.speech</groupId>
-            <artifactId>client-sdk</artifactId>
-            <version>1.37.0</version>
-        </dependency>
-
-        <!-- ffmpeg Java Wrapper -->
-        <dependency>
-            <groupId>net.bramp.ffmpeg</groupId>
-            <artifactId>ffmpeg</artifactId>
-            <version>0.8.0</version>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-ai-textanalytics</artifactId>
+            <version>5.2.0</version>
         </dependency>
 
         <dependency>

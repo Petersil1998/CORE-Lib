@@ -53,7 +53,7 @@ public class SpeechSynthesisMicrosoft implements SpeechSynthesis {
             VoiceAzure voice = getVoice(language, gender.name().toLowerCase());
             // create request
 
-            try(SpeechConfig config = SpeechConfig.fromSubscription(credentials.getAzureCredentials().getKey(), serviceRegion)) {
+            try(SpeechConfig config = SpeechConfig.fromSubscription(credentials.getAzureCredentials().getSpeechSynthesisApiKey(), serviceRegion)) {
                 config.setSpeechSynthesisOutputFormat(getOutputFormat(audioFormat));
                 config.setSpeechSynthesisVoiceName(voice.getShortName());
 
@@ -95,9 +95,7 @@ public class SpeechSynthesisMicrosoft implements SpeechSynthesis {
     private VoiceAzure getVoice(String languageCode, String gender)
             throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        VoiceAzure[] voices =
-                mapper.readValue(
-                        this.getClass().getResourceAsStream("azure_voices.json"), VoiceAzure[].class);
+        VoiceAzure[] voices = mapper.readValue(this.getClass().getResourceAsStream("azure_voices.json"), VoiceAzure[].class);
 
         for (VoiceAzure voice : voices) {
             if (getLanguageCodeFromLocale(voice.getLocale()).equalsIgnoreCase(languageCode)

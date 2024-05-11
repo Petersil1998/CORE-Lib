@@ -33,10 +33,8 @@ public class SpeechSynthesizer {
   public SpeechSynthesisResponse synthesizeSpeech(
       SpeechSynthesisRequest speechSynthesisRequest, Provider provider) throws Exception {
     // initialize provider
-    Storage storage = new StorageImpl(credentials);
-    Runtime runtime = new Runtime();
     SpeechSynthesisFactoryImpl factory =
-        new SpeechSynthesisFactoryImpl(configuration, credentials, runtime, storage);
+        new SpeechSynthesisFactoryImpl(configuration, credentials, new Runtime(), new StorageImpl(credentials));
     SpeechSynthesis speechSynthesizer = factory.getT2SProvider(provider);
     // invoke service
     return this.synthesizeSpeech(speechSynthesisRequest, speechSynthesizer);
@@ -46,10 +44,8 @@ public class SpeechSynthesizer {
       SpeechSynthesisRequest speechSynthesisRequest, Provider provider, String region)
       throws Exception {
     // initialize provider
-    Storage storage = new StorageImpl(credentials);
-    Runtime runtime = new Runtime();
     SpeechSynthesisFactoryImpl factory =
-        new SpeechSynthesisFactoryImpl(configuration, credentials, runtime, storage);
+        new SpeechSynthesisFactoryImpl(configuration, credentials, new Runtime(), new StorageImpl(credentials));
     SpeechSynthesis speechSynthesizer = factory.getT2SProvider(provider, region);
     // invoke service
     return this.synthesizeSpeech(speechSynthesisRequest, speechSynthesizer);
@@ -62,10 +58,8 @@ public class SpeechSynthesizer {
   public SpeechSynthesisResponse synthesizeSpeech(
       SpeechSynthesisRequest speechSynthesisRequest, AudioFormat audioFormat) throws Exception {
     // initialize provider
-    Storage storage = new StorageImpl(credentials);
-    Runtime runtime = new Runtime();
     SpeechSynthesisFactoryImpl factory =
-        new SpeechSynthesisFactoryImpl(configuration, credentials, runtime, storage);
+        new SpeechSynthesisFactoryImpl(configuration, credentials, new Runtime(), new StorageImpl(credentials));
     SpeechSynthesis provider = factory.getT2SProvider(audioFormat);
     // invoke service
     return provider.synthesizeSpeech(
@@ -80,10 +74,8 @@ public class SpeechSynthesizer {
   public SpeechSynthesisResponse synthesizeSpeech(SpeechSynthesisRequest speechSynthesisRequest)
       throws Exception {
     // initialize provider
-    Storage storage = new StorageImpl(credentials);
-    Runtime runtime = new Runtime();
     SpeechSynthesisFactoryImpl factory =
-        new SpeechSynthesisFactoryImpl(configuration, credentials, runtime, storage);
+        new SpeechSynthesisFactoryImpl(configuration, credentials, new Runtime(), new StorageImpl(credentials));
     SpeechSynthesis provider = factory.getT2SProvider();
     // invoke service
     return this.synthesizeSpeech(speechSynthesisRequest, provider);

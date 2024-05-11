@@ -59,7 +59,7 @@ public class TranslateProviderMicrosoft implements TranslateProvider {
         TextTranslationClientBuilder builder = new TextTranslationClientBuilder()
                 .region(serviceRegion)
                 .endpoint(ENDPOINT)
-                .credential(credentials.getAzureCredentials());
+                .credential(credentials.getAzureCredentials().getTranslationCredentials());
         return builder.buildClient();
     }
 

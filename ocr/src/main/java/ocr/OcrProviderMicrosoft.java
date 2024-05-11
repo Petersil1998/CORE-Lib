@@ -43,9 +43,9 @@ public class OcrProviderMicrosoft implements OcrProvider {
     public OcrResponse extract(String inputFile) throws Exception {
         byte[] data = storage.read(inputFile);
 
-        ComputerVisionClient client = ComputerVisionManager.authenticate(credentials.getAzureCredentials().getKey());
+        ComputerVisionClient client = ComputerVisionManager.authenticate(credentials.getAzureCredentials().getOcrApiKey());
         ComputerVisionImpl vision = (ComputerVisionImpl) client
-                .withEndpoint(credentials.getAzureVisionEndpoint())
+                .withEndpoint(credentials.getAzureCredentials().getOcrEndpoint())
                 .computerVision();
 
         ReadInStreamHeaders responseHeader = vision

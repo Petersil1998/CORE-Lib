@@ -79,11 +79,11 @@ public class StorageProviderMicrosoft implements StorageProvider {
     @Override
     public String getRegion(String bucketUrl) {
         AzureResourceManager manager = AzureResourceManager.authenticate(
-                credentials.getAzureClientSecretCredentials(),
+                credentials.getAzureCredentials().getStorageClientSecretCredentials(),
                 new AzureProfile(configuration.getDefaultAzureEnvironment())
-        ).withSubscription(credentials.getAzureSubscriptionKey());
+        ).withSubscription(credentials.getAzureCredentials().getStorageSubscriptionKey());
         StorageAccountInner storageAccount = manager.storageAccounts().manager().serviceClient().getStorageAccounts().list().stream()
-                .filter(storage -> credentials.getAzureStorageAccountName().equals(storage.name()))
+                .filter(storage -> credentials.getAzureCredentials().getStorageAccountName().equals(storage.name()))
                 .findAny()
                 .orElse(null);
 
@@ -101,9 +101,12 @@ public class StorageProviderMicrosoft implements StorageProvider {
 
     /** Create Google Cloud Storage client */
     private BlobContainerClient getBlobStorageClient(Credentials credentials, String bucketName) {
-        StorageSharedKeyCredential credential = new StorageSharedKeyCredential(credentials.getAzureStorageAccountName(), credentials.getAzureCredentials().getKey());
+        StorageSharedKeyCredential credential = new StorageSharedKeyCredential(
+                credentials.getAzureCredentials().getStorageAccountName(),
+                credentials.getAzureCredentials().getStorageApiKey());
+
         return new BlobContainerClientBuilder()
-                .endpoint(String.format("https://%s.blob.core.windows.net", credentials.getAzureStorageAccountName()))
+                .endpoint(String.format("https://%s.blob.core.windows.net", credentials.getAzureCredentials().getStorageAccountName()))
                 .credential(credential)
                 .containerName(bucketName)
                 .buildClient();

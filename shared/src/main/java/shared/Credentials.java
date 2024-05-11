@@ -1,10 +1,5 @@
 package shared;
 
-import com.azure.core.credential.AzureKeyCredential;
-import com.azure.core.credential.AzureSasCredential;
-import com.azure.core.credential.TokenCredential;
-import com.azure.identity.ClientSecretCredential;
-import com.azure.identity.ClientSecretCredentialBuilder;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -32,22 +27,14 @@ public class Credentials {
   private GoogleCredentials gcpCredentials;
   private String googleProjectId;
   private GoogleCredentials gcpClientCredentials;
-  private AzureKeyCredential azureCredentials;
-  private String azureStorageAccountName;
-  private String azureSubscriptionKey;
-  private ClientSecretCredential azureClientSecretCredentials;
-  private String azureVisionEndpoint;
+  private AzureCredentials azureCredentials;
 
   private Credentials(String credentialsString) throws IOException {
     this.awsCredentials = getAwsCredentialsV2(credentialsString);
     this.gcpCredentials = getGoogleServiceCredentials(credentialsString);
     this.googleProjectId = getGoogleProjectId(credentialsString);
     this.gcpClientCredentials = getGoogleClientCredentials(credentialsString);
-    this.azureCredentials = getAzureKeyCredentials(credentialsString);
-    this.azureStorageAccountName = getAzureStorageAccountName(credentialsString);
-    this.azureSubscriptionKey = getAzureSubscriptionKey(credentialsString);
-    this.azureClientSecretCredentials = getAzureClientSecretCredentials(credentialsString);
-    this.azureVisionEndpoint = getAzureVisionEndpoint(credentialsString);
+    this.azureCredentials = getAzureCredentials(credentialsString);
   }
 
   public static Credentials loadDefaultCredentials() throws IOException {
@@ -124,32 +111,7 @@ public class Credentials {
     return credentialsMap.get("project_id");
   }
 
-  private AzureKeyCredential getAzureKeyCredentials(String credentialsString) throws IOException {
-    Map<String, String> credentialsMap = getCredentialsMap(credentialsString, "azure_key_credentials");
-    return new AzureKeyCredential(credentialsMap.get("api_key"));
-  }
-
-  private String getAzureStorageAccountName(String credentialsString) throws IOException {
-    Map<String, String> credentialsMap = getCredentialsMap(credentialsString, "azure_key_credentials");
-    return credentialsMap.get("storage_account_name");
-  }
-
-  private String getAzureSubscriptionKey(String credentialsString) throws IOException {
-    Map<String, String> credentialsMap = getCredentialsMap(credentialsString, "azure_key_credentials");
-    return credentialsMap.get("subscription_key");
-  }
-
-  private ClientSecretCredential getAzureClientSecretCredentials(String credentialsString) throws IOException {
-    Map<String, String> credentialsMap = getCredentialsMap(credentialsString, "azure_key_credentials");
-    return new ClientSecretCredentialBuilder()
-            .tenantId(credentialsMap.get("tenant_id"))
-            .clientId(credentialsMap.get("client_id"))
-            .clientSecret(credentialsMap.get("client_secret"))
-            .build();
-  }
-
-  private String getAzureVisionEndpoint(String credentialsString) throws IOException {
-    Map<String, String> credentialsMap = getCredentialsMap(credentialsString, "azure_key_credentials");
-    return credentialsMap.get("vision_endpoint");
+  private AzureCredentials getAzureCredentials(String credentialsString) throws IOException {
+    return new AzureCredentials(credentialsString);
   }
 }
